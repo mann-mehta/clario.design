@@ -372,6 +372,67 @@
         ssAlertBoxes();
         ssMoveTo();
 
+        // Custom Cursor
+        const customCursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorRing = document.querySelector('.cursor-ring');
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let dotX = 0;
+        let dotY = 0;
+        let ringX = 0;
+        let ringY = 0;
+        
+        // Update cursor position on mouse move
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        // Animate cursor with smooth trailing effect
+        function animateCursor() {
+            // Smooth movement for dot (faster)
+            dotX += (mouseX - dotX) * 0.5;
+            dotY += (mouseY - dotY) * 0.5;
+            
+            // Smooth movement for ring (slower)
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            
+            cursorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
+            cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+            
+            requestAnimationFrame(animateCursor);
+        }
+        
+        animateCursor();
+        
+        // Expand ring on hover over interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .btn, input[type="submit"], input[type="reset"], input[type="button"], .folio-list__item-link, .folio-list__proj-link');
+        
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) scale(1.5)`;
+                cursorRing.style.opacity = '1';
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) scale(1)`;
+                cursorRing.style.opacity = '0.6';
+            });
+        });
+        
+        // Hide cursor when leaving window
+        document.addEventListener('mouseleave', function() {
+            customCursor.style.opacity = '0';
+        });
+        
+        // Show cursor when entering window
+        document.addEventListener('mouseenter', function() {
+            customCursor.style.opacity = '1';
+        });
+
         // Reset links and buttons to default state after click
         document.addEventListener('click', function(e) {
             // Remove focus from clicked element after a short delay
