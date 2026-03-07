@@ -4672,3 +4672,29 @@ img.u-pull-left {
         padding-top : 4rem;
     }
 }
+
+
+/* Toast Notification
+ * ===================================================================== */
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150px);
+    background-color: #0F172A;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

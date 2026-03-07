@@ -457,6 +457,42 @@
             });
         });
 
+        // Copy to Clipboard Function
+        window.copyToClipboard = function(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            
+            textarea.select();
+            document.execCommand('copy');
+            
+            document.body.removeChild(textarea);
+            
+            showToast('Email Copied');
+        };
+
+        // Toast Notification Function
+        window.showToast = function(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        };
+
     })();
 
 })(document.documentElement);
