@@ -2322,6 +2322,17 @@ input[type="button"]:hover ~ .custom-cursor .cursor-ring,
     }
 }
 
+/* Hide custom cursor on small screens (mobile) */
+@media screen and (max-width: 768px) {
+    .custom-cursor {
+        display: none !important;
+    }
+    
+    body {
+        cursor: auto;
+    }
+}
+
 
 
 /* ===================================================================
