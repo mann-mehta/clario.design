@@ -145,24 +145,30 @@
         
             // Get current scroll position
             let scrollY = window.pageYOffset;
+            
+            // First, remove all current classes
+            document.querySelectorAll(".main-nav li").forEach(function(li) {
+                li.classList.remove("current");
+            });
         
             // Loop through sections to get height(including padding and border), 
             // top and ID values for each
             sections.forEach(function(current) {
                 const sectionHeight = current.offsetHeight;
-                const sectionTop = current.offsetTop - 50;
+                const sectionTop = current.offsetTop - 100;
                 const sectionId = current.getAttribute("id");
             
                /* If our current scroll position enters the space where current section 
-                * on screen is, add .current class to parent element(li) of the thecorresponding 
+                * on screen is, add .current class to parent element(li) of the corresponding 
                 * navigation link, else remove it. To know which link is active, we use 
                 * sectionId variable we are getting while looping through sections as 
                 * an selector
                 */
                 if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                    document.querySelector(".main-nav a[href*=" + sectionId + "]").parentNode.classList.add("current");
-                } else {
-                    document.querySelector(".main-nav a[href*=" + sectionId + "]").parentNode.classList.remove("current");
+                    const activeLink = document.querySelector(".main-nav a[href='#" + sectionId + "']");
+                    if (activeLink) {
+                        activeLink.parentNode.classList.add("current");
+                    }
                 }
             });
         }
@@ -247,33 +253,40 @@
     * ------------------------------------------------------ */
     const ssLightbox = function() {
 
-        const folioLinks = document.querySelectorAll('.folio-list__item-link');
+        // Only process links that have internal modal targets (href starting with #)
+        const folioLinks = document.querySelectorAll('.folio-list__item-link[href^="#"]');
         const modals = [];
 
         folioLinks.forEach(function(link) {
             let modalbox = link.getAttribute('href');
-            let instance = basicLightbox.create(
-                document.querySelector(modalbox),
-                {
-                    onShow: function(instance) {
-                        //detect Escape key press
-                        document.addEventListener("keydown", function(event) {
-                            event = event || window.event;
-                            if (event.keyCode === 27) {
-                                instance.close();
-                            }
-                        });
+            // Check if the modal element exists before creating lightbox
+            const modalElement = document.querySelector(modalbox);
+            if (modalElement) {
+                let instance = basicLightbox.create(
+                    modalElement,
+                    {
+                        onShow: function(instance) {
+                            //detect Escape key press
+                            document.addEventListener("keydown", function(event) {
+                                event = event || window.event;
+                                if (event.keyCode === 27) {
+                                    instance.close();
+                                }
+                            });
+                        }
                     }
-                }
-            )
-            modals.push(instance);
+                )
+                modals.push(instance);
+            }
         });
 
         folioLinks.forEach(function(link, index) {
-            link.addEventListener("click", function(event) {
-                event.preventDefault();
-                modals[index].show();
-            });
+            if (modals[index]) { // Only add event listener if modal exists
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    modals[index].show();
+                });
+            }
         });
 
     };  // end ssLightbox
@@ -334,7 +347,7 @@
         
         const moveTo = new MoveTo({
             tolerance: 0,
-            duration: 1200,
+            duration: 1000,
             easing: 'easeInOutCubic',
             container: window
         }, easeFunctions);
@@ -358,6 +371,91 @@
         ssLightbox();
         ssAlertBoxes();
         ssMoveTo();
+
+        // Reset links and buttons to default state after click
+        document.addEventListener('click', function(e) {
+            // Remove focus from clicked element after a short delay
+            if (e.target.matches('a, button, .btn, input[type="submit"], input[type="reset"], input[type="button"]')) {
+                setTimeout(function() {
+                    e.target.blur();
+                }, 150);
+            }
+        });
+
+        // Magnetic Button Effect
+        const magneticButtons = document.querySelectorAll('.magnetic-btn');
+        
+        magneticButtons.forEach(button => {
+            let isHovering = false;
+            let animationFrame = null;
+            
+            button.addEventListener('mouseenter', function() {
+                isHovering = true;
+                this.classList.add('magnetic-active');
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                isHovering = false;
+                this.classList.remove('magnetic-active');
+                
+                // Cancel any pending animation frame
+                if (animationFrame) {
+                    cancelAnimationFrame(animationFrame);
+                    animationFrame = null;
+                }
+                
+                // Smooth return to original position
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    if (!isHovering) {
+                        this.style.transform = '';
+                    }
+                }, 100);
+            });
+            
+            button.addEventListener('mousemove', function(e) {
+                if (!isHovering) return;
+                
+                // Cancel previous animation frame
+                if (animationFrame) {
+                    cancelAnimationFrame(animationFrame);
+                }
+                
+                animationFrame = requestAnimationFrame(() => {
+                    const rect = this.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const deltaX = e.clientX - centerX;
+                    const deltaY = e.clientY - centerY;
+                    
+                    // Limit the magnetic effect strength and distance
+                    const maxDistance = 80;
+                    const strength = 0.2;
+                    
+                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    
+                    if (distance < maxDistance) {
+                        const moveX = Math.max(-15, Math.min(15, deltaX * strength));
+                        const moveY = Math.max(-15, Math.min(15, deltaY * strength));
+                        
+                        this.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
+                    } else {
+                        this.style.transform = 'scale(1.05)';
+                    }
+                });
+            });
+            
+            // Handle click to prevent weird behavior
+            button.addEventListener('click', function() {
+                this.style.transform = '';
+                setTimeout(() => {
+                    if (!isHovering) {
+                        this.classList.remove('magnetic-active');
+                    }
+                }, 200);
+            });
+        });
 
     })();
 
