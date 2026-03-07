@@ -4698,13 +4698,3 @@ img.u-pull-left {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
-
-
-/* Expertise Icons
- * ===================================================================== */
-.expertise-icon {
-    display: block;
-    margin-bottom: 16px;
-    stroke: var(--color-black);
-    color: var(--color-black);
-}
