@@ -4698,3 +4698,28 @@ img.u-pull-left {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
+
+
+/* Expertise Icon Container
+ * ===================================================================== */
+.expertise-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background-color: rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.expertise-item:hover .expertise-icon-container {
+    background-color: rgba(15, 23, 42, 0.12);
+    transform: translateY(-4px);
+}
+
+.expertise-icon {
+    color: currentColor;
+    flex-shrink: 0;
+}
