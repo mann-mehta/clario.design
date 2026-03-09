@@ -3827,6 +3827,27 @@ img.u-pull-left {
     line-height    : 1.6;
 }
 
+.expertise-icon {
+    width          : 40px;
+    height         : 40px;
+    margin-bottom  : var(--vspace-1);
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    transition     : transform 0.3s ease;
+}
+
+.expertise-icon img {
+    width          : 40px;
+    height         : 40px;
+    object-fit     : contain;
+    filter         : invert(24%) sepia(100%) saturate(1200%) hue-rotate(200deg);
+}
+
+.expertise-item:hover .expertise-icon {
+    transform      : translateY(-4px);
+}
+
 /* ------------------------------------------------------------------- 
  * responsive:
  * expertise
